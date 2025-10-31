@@ -10,6 +10,7 @@ export default function DebugPage() {
   const [sections, setSections] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   const loadData = async () => {
     setLoading(true)
@@ -28,10 +29,13 @@ export default function DebugPage() {
   }
 
   useEffect(() => {
+    setMounted(true)
     loadData()
   }, [])
 
   const clearAllCache = () => {
+    if (typeof window === 'undefined') return
+    
     // Limpiar localStorage
     localStorage.clear()
     
@@ -44,6 +48,32 @@ export default function DebugPage() {
     })
     
     alert("Caché limpiado completamente. Presiona F5 para recargar.")
+  }
+
+  const getLocalStorageInfo = () => {
+    if (typeof window === 'undefined') return { count: 0, keys: [] }
+    return {
+      count: Object.keys(localStorage).length,
+      keys: Object.keys(localStorage)
+    }
+  }
+
+  const getSessionStorageInfo = () => {
+    if (typeof window === 'undefined') return 0
+    return Object.keys(sessionStorage).length
+  }
+
+  const getCookiesInfo = () => {
+    if (typeof window === 'undefined') return 0
+    return document.cookie.split(";").filter((c) => c.trim()).length
+  }
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8 flex items-center justify-center">
+        <div className="text-white text-2xl">Cargando diagnóstico...</div>
+      </div>
+    )
   }
 
   return (
@@ -153,11 +183,11 @@ export default function DebugPage() {
               <div className="bg-orange-50 rounded-lg p-4">
                 <p className="font-semibold text-orange-900 mb-2">localStorage</p>
                 <p className="text-sm text-orange-700">
-                  Items: {Object.keys(localStorage).length}
+                  Items: {getLocalStorageInfo().count}
                 </p>
-                {Object.keys(localStorage).length > 0 && (
+                {getLocalStorageInfo().count > 0 && (
                   <div className="mt-2 text-xs text-gray-600">
-                    {Object.keys(localStorage).map((key) => (
+                    {getLocalStorageInfo().keys.map((key) => (
                       <div key={key} className="truncate">• {key}</div>
                     ))}
                   </div>
@@ -167,14 +197,14 @@ export default function DebugPage() {
               <div className="bg-orange-50 rounded-lg p-4">
                 <p className="font-semibold text-orange-900 mb-2">sessionStorage</p>
                 <p className="text-sm text-orange-700">
-                  Items: {Object.keys(sessionStorage).length}
+                  Items: {getSessionStorageInfo()}
                 </p>
               </div>
               
               <div className="bg-orange-50 rounded-lg p-4">
                 <p className="font-semibold text-orange-900 mb-2">Cookies</p>
                 <p className="text-sm text-orange-700">
-                  Items: {document.cookie.split(";").filter((c) => c.trim()).length}
+                  Items: {getCookiesInfo()}
                 </p>
               </div>
             </div>
