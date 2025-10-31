@@ -291,7 +291,7 @@ export default function ArteSpaLanding() {
         <div
           className="w-full h-full bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/images/spa-room.png')`,
+            backgroundImage: `url('/images/spa-massage-background.jpeg')`,
           }}
         />
         <div
@@ -405,26 +405,26 @@ export default function ArteSpaLanding() {
                 <div className="grid grid-cols-2 gap-3 md:gap-6">
                   <div className="space-y-3 md:space-y-4">
                     <img
-                      src="/images/products-collection.png"
-                      alt="Productos Aromáticos"
-                      className="w-full h-24 md:h-32 object-cover rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      src="/images/tattoo-studio.png"
+                      alt="Estudio de Tatuajes"
+                      className="w-full h-40 md:h-56 object-contain rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     />
                     <img
-                      src="/images/spa-treatment.png"
-                      alt="Spa Treatment"
-                      className="w-full h-16 md:h-24 object-cover rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      src="/images/crochet-frogs.png"
+                      alt="Artesanías en Crochet"
+                      className="w-full h-32 md:h-44 object-contain rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     />
                   </div>
                   <div className="space-y-3 md:space-y-4 pt-4 md:pt-8">
                     <img
-                      src="/images/aromatherapy.png"
-                      alt="Aromaterapia"
-                      className="w-full h-16 md:h-24 object-cover rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      src="/images/wood-cabin.jpeg"
+                      alt="Trabajos en Madera"
+                      className="w-full h-32 md:h-44 object-contain rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     />
                     <img
-                      src="/images/spa-candles.png"
-                      alt="Velas Spa"
-                      className="w-full h-24 md:h-32 object-cover rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      src="/images/spa-massage-background.jpeg"
+                      alt="Spa y Bienestar"
+                      className="w-full h-40 md:h-56 object-contain rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     />
                   </div>
                 </div>
