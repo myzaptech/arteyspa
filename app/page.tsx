@@ -154,7 +154,8 @@ export default function ArteSpaLanding() {
 
     loadData()
 
-    const interval = setInterval(loadData, 30000)
+    // Recargar datos cada 10 segundos para mantener actualizado
+    const interval = setInterval(loadData, 10000)
 
     return () => clearInterval(interval)
   }, [activeCategory])

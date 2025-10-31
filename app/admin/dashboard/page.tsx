@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import Swal from "sweetalert2"
 const PlusIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -106,6 +107,7 @@ import {
   updateProduct,
   deleteProduct,
   addSection,
+  deleteSection,
   uploadProductImage,
   deleteProductImage,
   type Product,
@@ -140,7 +142,12 @@ export default function AdminDashboard() {
       setSections(sectionsData)
     } catch (error) {
       console.error("Error loading data:", error)
-      alert("Error al cargar los datos. Por favor, recarga la página.")
+      await Swal.fire({
+        title: "Error",
+        text: "Error al cargar los datos. Por favor, recarga la página.",
+        icon: "error",
+        confirmButtonColor: "#406577",
+      })
     } finally {
       setLoading(false)
     }
@@ -158,9 +165,20 @@ export default function AdminDashboard() {
         const success = await updateProduct(editingProduct.id, productData)
         if (success) {
           setProducts(products.map((p) => (p.id === editingProduct.id ? { ...productData, id: editingProduct.id } : p)))
-          alert("Producto actualizado exitosamente")
+          await Swal.fire({
+            title: "¡Actualizado!",
+            text: "El producto ha sido actualizado exitosamente",
+            icon: "success",
+            confirmButtonColor: "#406577",
+            timer: 2000,
+          })
         } else {
-          alert("Error al actualizar el producto")
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudo actualizar el producto",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
         }
       } else {
         // Add new product
@@ -168,31 +186,74 @@ export default function AdminDashboard() {
         if (newProductId) {
           const newProduct = { ...productData, id: newProductId }
           setProducts([...products, newProduct])
-          alert("Producto agregado exitosamente")
+          await Swal.fire({
+            title: "¡Agregado!",
+            text: "El producto ha sido agregado exitosamente",
+            icon: "success",
+            confirmButtonColor: "#406577",
+            timer: 2000,
+          })
         } else {
-          alert("Error al agregar el producto")
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudo agregar el producto",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
         }
       }
       setEditingProduct(null)
     } catch (error) {
       console.error("Error saving product:", error)
-      alert("Error al guardar el producto")
+      await Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al guardar el producto",
+        icon: "error",
+        confirmButtonColor: "#406577",
+      })
     }
   }
 
   const handleDeleteProduct = async (id: string) => {
-    if (confirm("¿Estás seguro de eliminar este producto?")) {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción eliminará el producto permanentemente",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#406577",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    })
+
+    if (result.isConfirmed) {
       try {
         const success = await deleteProduct(id)
         if (success) {
           setProducts(products.filter((p) => p.id !== id))
-          alert("Producto eliminado exitosamente")
+          await Swal.fire({
+            title: "¡Eliminado!",
+            text: "El producto ha sido eliminado exitosamente",
+            icon: "success",
+            confirmButtonColor: "#406577",
+            timer: 2000,
+          })
         } else {
-          alert("Error al eliminar el producto")
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudo eliminar el producto",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
         }
       } catch (error) {
         console.error("Error deleting product:", error)
-        alert("Error al eliminar el producto")
+        await Swal.fire({
+          title: "Error",
+          text: "Ocurrió un error al eliminar el producto",
+          icon: "error",
+          confirmButtonColor: "#406577",
+        })
       }
     }
   }
@@ -211,27 +272,73 @@ export default function AdminDashboard() {
           const newSectionObj = { ...newSectionData, id: newSectionId }
           setSections([...sections, newSectionObj])
           setNewSection("")
-          alert("Sección agregada exitosamente")
+          await Swal.fire({
+            title: "¡Creada!",
+            text: "La sección ha sido agregada exitosamente",
+            icon: "success",
+            confirmButtonColor: "#406577",
+            timer: 2000,
+          })
         } else {
-          alert("Error al agregar la sección")
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudo agregar la sección",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
         }
       } catch (error) {
         console.error("Error adding section:", error)
-        alert("Error al agregar la sección")
+        await Swal.fire({
+          title: "Error",
+          text: "Ocurrió un error al agregar la sección",
+          icon: "error",
+          confirmButtonColor: "#406577",
+        })
       }
     }
   }
 
   const handleDeleteSection = async (id: string) => {
-    if (confirm("¿Estás seguro de eliminar esta sección? Esto podría afectar los productos asociados.")) {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esto podría afectar los productos asociados a esta sección",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#406577",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    })
+
+    if (result.isConfirmed) {
       try {
-        // Note: You might want to implement deleteSection function in Firebase
-        // For now, we'll just remove it from local state
-        setSections(sections.filter((s) => s.id !== id))
-        alert("Sección eliminada exitosamente")
+        const success = await deleteSection(id)
+        if (success) {
+          setSections(sections.filter((s) => s.id !== id))
+          await Swal.fire({
+            title: "¡Eliminada!",
+            text: "La sección ha sido eliminada exitosamente de Firebase",
+            icon: "success",
+            confirmButtonColor: "#406577",
+            timer: 2000,
+          })
+        } else {
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudo eliminar la sección de Firebase",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
+        }
       } catch (error) {
         console.error("Error deleting section:", error)
-        alert("Error al eliminar la sección")
+        await Swal.fire({
+          title: "Error",
+          text: "Ocurrió un error al eliminar la sección",
+          icon: "error",
+          confirmButtonColor: "#406577",
+        })
       }
     }
   }
@@ -556,7 +663,12 @@ function ProductForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.name || !formData.description || !formData.sectionId) {
-      alert("Por favor completa todos los campos requeridos")
+      await Swal.fire({
+        title: "Campos incompletos",
+        text: "Por favor completa todos los campos requeridos",
+        icon: "warning",
+        confirmButtonColor: "#406577",
+      })
       return
     }
 
@@ -574,7 +686,12 @@ function ProductForm({
             await deleteProductImage(product.image)
           }
         } else {
-          alert("Error al subir la imagen")
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudo subir la imagen",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
           setUploading(false)
           return
         }
@@ -583,7 +700,12 @@ function ProductForm({
       onSave({ ...formData, image: imageUrl })
     } catch (error) {
       console.error("Error saving product:", error)
-      alert("Error al guardar el producto")
+      await Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al guardar el producto",
+        icon: "error",
+        confirmButtonColor: "#406577",
+      })
     } finally {
       setUploading(false)
     }

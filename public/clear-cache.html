@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpiar Caché - Arte & Spa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #406577 0%, #84AEBC 50%, #C7D1D8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #406577;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #406577;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #84AEBC;
+            transform: scale(1.05);
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Limpiar Caché</h1>
+        <p>Si ves datos antiguos que ya fueron eliminados, usa esta herramienta para limpiar el caché local.</p>
+        
+        <button class="btn" onclick="clearCache()">Limpiar Caché Local</button>
+        <button class="btn" onclick="viewCache()">Ver Datos Actuales</button>
+        <button class="btn" onclick="location.href='/'">Volver al Inicio</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function clearCache() {
+            try {
+                // Limpiar localStorage
+                localStorage.removeItem('artespa_products');
+                localStorage.removeItem('artespa_sections');
+                
+                // Limpiar sessionStorage
+                sessionStorage.clear();
+                
+                const status = document.getElementById('status');
+                status.className = 'status success';
+                status.style.display = 'block';
+                status.innerHTML = `
+                    <strong>✅ ¡Caché limpiado exitosamente!</strong><br>
+                    <small>Recarga la página principal para ver los cambios.</small>
+                `;
+                
+                // Recargar después de 2 segundos
+                setTimeout(() => {
+                    if (confirm('¿Deseas recargar la página ahora?')) {
+                        window.location.href = '/';
+                    }
+                }, 2000);
+            } catch (error) {
+                const status = document.getElementById('status');
+                status.className = 'status error';
+                status.style.display = 'block';
+                status.textContent = '❌ Error al limpiar el caché: ' + error.message;
+            }
+        }
+
+        function viewCache() {
+            const products = localStorage.getItem('artespa_products');
+            const sections = localStorage.getItem('artespa_sections');
+            
+            const status = document.getElementById('status');
+            status.className = 'status info';
+            status.style.display = 'block';
+            
+            let html = '<strong>Datos en caché:</strong><br><br>';
+            
+            if (products) {
+                const parsedProducts = JSON.parse(products);
+                html += `<strong>Productos:</strong> ${parsedProducts.length} items<br>`;
+            } else {
+                html += '<strong>Productos:</strong> No hay datos en caché<br>';
+            }
+            
+            if (sections) {
+                const parsedSections = JSON.parse(sections);
+                html += `<strong>Secciones:</strong> ${parsedSections.length} items<br>`;
+            } else {
+                html += '<strong>Secciones:</strong> No hay datos en caché<br>';
+            }
+            
+            status.innerHTML = html;
+        }
+
+        // Verificar al cargar
+        window.onload = function() {
+            viewCache();
+        };
+    </script>
+</body>
+</html>
