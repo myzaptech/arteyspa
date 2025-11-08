@@ -132,28 +132,22 @@ export const deleteSection = async (id: string): Promise<boolean> => {
 }
 
 export const uploadProductImage = async (file: File, productName: string): Promise<string | null> => {
-  if (isUsingMockFirebase) {
-    // In mock mode, create a blob URL for the image
-    return URL.createObjectURL(file)
-  }
-
   try {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage")
-
-    // Create a unique filename with timestamp
-    const timestamp = Date.now()
-    const fileName = `products/${productName.replace(/\s+/g, "_")}_${timestamp}.${file.name.split(".").pop()}`
-
-    // Create storage reference
-    const storageRef = ref(storage, fileName)
-
-    // Upload file
-    const snapshot = await uploadBytes(storageRef, file)
-
-    // Get download URL
-    const downloadURL = await getDownloadURL(snapshot.ref)
-
-    return downloadURL
+    // Convert file to base64 and return data URL
+    // This stores the image directly in Firestore as base64 string
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      
+      reader.onloadend = () => {
+        resolve(reader.result as string)
+      }
+      
+      reader.onerror = () => {
+        reject(new Error("Failed to read file"))
+      }
+      
+      reader.readAsDataURL(file)
+    })
   } catch (error) {
     console.error("Error uploading image:", error)
     return null
@@ -161,30 +155,7 @@ export const uploadProductImage = async (file: File, productName: string): Promi
 }
 
 export const deleteProductImage = async (imageUrl: string): Promise<boolean> => {
-  if (isUsingMockFirebase) {
-    // In mock mode, revoke the blob URL
-    if (imageUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(imageUrl)
-    }
-    return true
-  }
-
-  try {
-    const { ref, deleteObject } = await import("firebase/storage")
-
-    // Extract the file path from the URL
-    const url = new URL(imageUrl)
-    const pathStart = url.pathname.indexOf("/o/") + 3
-    const pathEnd = url.pathname.indexOf("?")
-    const filePath = decodeURIComponent(url.pathname.substring(pathStart, pathEnd))
-
-    // Create storage reference and delete
-    const storageRef = ref(storage, filePath)
-    await deleteObject(storageRef)
-
-    return true
-  } catch (error) {
-    console.error("Error deleting image:", error)
-    return false
-  }
+  // When using base64, images are stored in Firestore
+  // No separate deletion needed - they get deleted with the product document
+  return true
 }

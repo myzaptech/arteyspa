@@ -131,6 +131,21 @@ export default function ArteSpaLanding() {
   const [products, setProducts] = useState<Product[]>([])
   const [sections, setSections] = useState<ProductSection[]>([])
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
+
+  // Generar posiciones aleatorias solo una vez en el cliente
+  const floatingParticles = useState(() => 
+    Array.from({ length: 8 }, () => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 10,
+      duration: 20 + Math.random() * 10
+    }))
+  )[0]
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const loadData = async () => {
@@ -153,11 +168,6 @@ export default function ArteSpaLanding() {
     }
 
     loadData()
-
-    // Recargar datos cada 10 segundos para mantener actualizado
-    const interval = setInterval(loadData, 10000)
-
-    return () => clearInterval(interval)
   }, [activeCategory])
 
   const handleScroll = useCallback(() => {
@@ -315,20 +325,22 @@ export default function ArteSpaLanding() {
         ></div>
       </div>
 
-      <div className="fixed inset-0 z-5 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-[#C7D1D8]/20 rounded-full animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 10}s`,
-              animationDuration: `${20 + Math.random() * 10}s`,
-            }}
-          />
-        ))}
-      </div>
+      {mounted && (
+        <div className="fixed inset-0 z-5 pointer-events-none">
+          {floatingParticles.map((particle, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-[#C7D1D8]/20 rounded-full animate-float"
+              style={{
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                animationDelay: `${particle.delay}s`,
+                animationDuration: `${particle.duration}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       <section className="relative z-10 py-16 md:py-32 px-4">
         <div className="max-w-7xl mx-auto">
