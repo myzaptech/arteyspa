@@ -122,6 +122,7 @@ export default function AdminDashboard() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [newSection, setNewSection] = useState("")
   const [loading, setLoading] = useState(true)
+  const [duplicates, setDuplicates] = useState<Record<string, Product[]>>({})
   const router = useRouter()
 
   useEffect(() => {
@@ -140,6 +141,10 @@ export default function AdminDashboard() {
       const [productsData, sectionsData] = await Promise.all([getProducts(), getSections()])
       setProducts(productsData)
       setSections(sectionsData)
+
+      // Detect duplicates
+      const dupsMap = detectDuplicates(productsData)
+      setDuplicates(dupsMap)
     } catch (error) {
       console.error("Error loading data:", error)
       await Swal.fire({
@@ -151,6 +156,28 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const detectDuplicates = (products: Product[]): Record<string, Product[]> => {
+    const grouped: Record<string, Product[]> = {}
+
+    products.forEach(product => {
+      const key = product.name.toLowerCase().trim()
+      if (!grouped[key]) {
+        grouped[key] = []
+      }
+      grouped[key].push(product)
+    })
+
+    // Only keep entries with more than one product (duplicates)
+    const duplicates: Record<string, Product[]> = {}
+    Object.entries(grouped).forEach(([key, prods]) => {
+      if (prods.length > 1) {
+        duplicates[key] = prods
+      }
+    })
+
+    return duplicates
   }
 
   const handleLogout = () => {
@@ -343,6 +370,66 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleRemoveDuplicates = async (productName: string, duplicateGroup: Product[]) => {
+    const result = await Swal.fire({
+      title: "¿Eliminar duplicados?",
+      html: `
+        <p>Se encontraron <strong>${duplicateGroup.length}</strong> copias de "<strong>${productName}</strong>"</p>
+        <p>Se mantendrá <strong>1 producto</strong> y se eliminarán <strong>${duplicateGroup.length - 1} duplicados</strong></p>
+      `,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#406577",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar duplicados",
+      cancelButtonText: "Cancelar",
+    })
+
+    if (result.isConfirmed) {
+      try {
+        // Keep first one, delete the rest
+        const toDelete = duplicateGroup.slice(1)
+        let successCount = 0
+
+        for (const product of toDelete) {
+          if (product.id) {
+            const success = await deleteProduct(product.id)
+            if (success) {
+              successCount++
+            }
+          }
+        }
+
+        if (successCount > 0) {
+          await Swal.fire({
+            title: "¡Duplicados eliminados!",
+            text: `Se eliminaron ${successCount} productos duplicados exitosamente`,
+            icon: "success",
+            confirmButtonColor: "#406577",
+            timer: 2000,
+          })
+          // Reload data
+          await loadData()
+        } else {
+          await Swal.fire({
+            title: "Error",
+            text: "No se pudieron eliminar los duplicados",
+            icon: "error",
+            confirmButtonColor: "#406577",
+          })
+        }
+      } catch (error) {
+        console.error("Error removing duplicates:", error)
+        await Swal.fire({
+          title: "Error",
+          text: "Ocurrió un error al eliminar los duplicados",
+          icon: "error",
+          confirmButtonColor: "#406577",
+        })
+      }
+    }
+  }
+
   if (!isAuthenticated) {
     return <div>Cargando...</div>
   }
@@ -385,7 +472,17 @@ export default function AdminDashboard() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-[#406577]">Panel de Administración - Arte y Spa</h1>
+          <div className="flex items-center gap-4">
+            <img
+              src="/logo.png"
+              alt="Arte y Spa Logo"
+              className="h-10 md:h-12 w-auto object-contain"
+              style={{
+                clipPath: 'inset(8% 8% 8% 8%)',
+              }}
+            />
+            <h1 className="text-2xl font-bold text-[#406577]">Panel de Administración - Arte y Spa</h1>
+          </div>
           <Button
             onClick={handleLogout}
             variant="outline"
@@ -423,6 +520,18 @@ export default function AdminDashboard() {
           >
             <FolderPlusIcon className="mr-2 h-4 w-4" />
             Secciones ({sections.length})
+          </Button>
+          <Button
+            onClick={() => setActiveTab("duplicates")}
+            variant={activeTab === "duplicates" ? "default" : "outline"}
+            className={
+              activeTab === "duplicates"
+                ? "bg-gradient-to-r from-[#84AEBC] to-[#406577] text-white"
+                : "border-[#C7D1D8]/40 text-[#406577] hover:bg-[#C7D1D8]/20"
+            }
+          >
+            <Trash2Icon className="mr-2 h-4 w-4" />
+            Duplicados ({Object.keys(duplicates).length})
           </Button>
         </div>
 
@@ -611,8 +720,115 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
-      </div>
-    </div>
+
+        {/* Duplicates Tab */}
+        {activeTab === "duplicates" && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-[#406577]">Gestión de Duplicados</h2>
+
+            {Object.keys(duplicates).length === 0 ? (
+              <Card
+                style={{
+                  background: `linear-gradient(135deg, 
+                  rgba(199, 209, 216, 0.15) 0%, 
+                  rgba(132, 174, 188, 0.1) 100%)`,
+                  backdropFilter: "blur(12px)",
+                  borderColor: "rgba(199, 209, 216, 0.3)",
+                }}
+              >
+                <CardContent className="text-center py-8">
+                  <p className="text-[#406577] text-lg">✅ No hay productos duplicados</p>
+                  <p className="text-[#84AEBC] text-sm">Todos los productos tienen nombres únicos</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                <Card
+                  style={{
+                    background: `linear-gradient(135deg, 
+                    rgba(199, 209, 216, 0.15) 0%, 
+                    rgba(132, 174, 188, 0.1) 100%)`,
+                    backdropFilter: "blur(12px)",
+                    borderColor: "rgba(199, 209, 216, 0.3)",
+                  }}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-[#406577]">⚠️ Productos Duplicados Detectados</CardTitle>
+                    <CardDescription className="text-[#84AEBC]">
+                      Se encontraron {Object.keys(duplicates).length} grupos de productos con nombres duplicados.
+                      Para cada grupo, se mantendrá un producto y se eliminarán los demás.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                {Object.entries(duplicates).map(([productName, duplicateGroup]) => (
+                  <Card
+                    key={productName}
+                    style={{
+                      background: `linear-gradient(135deg, 
+                      rgba(255, 200, 200, 0.15) 0%, 
+                      rgba(255, 150, 150, 0.1) 100%)`,
+                      backdropFilter: "blur(12px)",
+                      borderColor: "rgba(255, 100, 100, 0.3)",
+                    }}
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-[#406577] flex items-center justify-between">
+                        <span>{duplicateGroup[0].name}</span>
+                        <span className="text-red-600 text-sm font-normal">
+                          {duplicateGroup.length} copias
+                        </span>
+                      </CardTitle>
+                      <CardDescription className="text-[#84AEBC]">
+                        Sección: {sections.find((s) => s.id === duplicateGroup[0].sectionId)?.name || "Sin sección"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {duplicateGroup.map((product, index) => (
+                            <div
+                              key={product.id}
+                              className={`p-3 rounded border ${index === 0
+                                ? "bg-green-50/50 border-green-300"
+                                : "bg-red-50/50 border-red-300"
+                                }`}
+                            >
+                              <div className="flex items-start gap-2">
+                                <img
+                                  src={product.image || "/placeholder.svg"}
+                                  alt={product.name}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-[#406577] truncate">
+                                    {index === 0 ? "✅ Se mantendrá" : "❌ Se eliminará"}
+                                  </p>
+                                  <p className="text-xs text-[#84AEBC] truncate">{product.subtitle}</p>
+                                  <p className="text-xs text-[#84AEBC]">ID: {product.id}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <Button
+                          onClick={() => handleRemoveDuplicates(duplicateGroup[0].name, duplicateGroup)}
+                          className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white"
+                        >
+                          <Trash2Icon className="mr-2 h-4 w-4" />
+                          Eliminar {duplicateGroup.length - 1} Duplicado{duplicateGroup.length - 1 > 1 ? "s" : ""}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card >
+                ))
+                }
+              </div >
+            )}
+          </div >
+        )}
+      </div >
+    </div >
   )
 }
 

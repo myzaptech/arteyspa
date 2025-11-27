@@ -6,9 +6,18 @@ import { CacheCleaner } from '@/components/cache-cleaner'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'Arte y Spa - Centro de Bienestar y Relajación',
+  description: 'Centro de bienestar y spa de lujo. Disfruta de nuestros tratamientos de relajación, masajes, terapias y servicios de belleza en un ambiente tranquilo y profesional.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 }
 
 export default function RootLayout({

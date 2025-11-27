@@ -134,7 +134,7 @@ export default function ArteSpaLanding() {
   const [mounted, setMounted] = useState(false)
 
   // Generar posiciones aleatorias solo una vez en el cliente
-  const floatingParticles = useState(() => 
+  const floatingParticles = useState(() =>
     Array.from({ length: 8 }, () => ({
       left: Math.random() * 100,
       top: Math.random() * 100,
@@ -292,9 +292,9 @@ export default function ArteSpaLanding() {
     activeCategory === "all"
       ? products
       : products.filter((product) => {
-          const section = sections.find((s) => s.id === product.sectionId)
-          return section?.slug === activeCategory
-        })
+        const section = sections.find((s) => s.id === product.sectionId)
+        return section?.slug === activeCategory
+      })
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -362,6 +362,18 @@ export default function ArteSpaLanding() {
                 >
                   Emprendimiento Familiar • Zapatoca, Santander
                 </span>
+              </div>
+
+              {/* Logo */}
+              <div className="flex justify-start mb-6 md:mb-8 animate-fade-in-up">
+                <img
+                  src="/logo.png"
+                  alt="Arte y Spa Logo"
+                  className="h-20 sm:h-24 md:h-32 lg:h-40 w-auto object-contain drop-shadow-2xl hover:scale-110 transition-transform duration-500"
+                  style={{
+                    clipPath: 'inset(8% 8% 8% 8%)',
+                  }}
+                />
               </div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black mb-6 md:mb-8 leading-tight tracking-tight">
@@ -527,9 +539,8 @@ export default function ArteSpaLanding() {
             {services.map((service, index) => (
               <Card
                 key={service.id}
-                className={`border backdrop-blur-md hover:transform hover:scale-105 hover:shadow-2xl animate-on-scroll group transition-all duration-700 ${
-                  index % 2 === 0 ? "hover:rotate-1" : "hover:-rotate-1"
-                }`}
+                className={`border backdrop-blur-md hover:transform hover:scale-105 hover:shadow-2xl animate-on-scroll group transition-all duration-700 ${index % 2 === 0 ? "hover:rotate-1" : "hover:-rotate-1"
+                  }`}
                 style={{
                   background: `linear-gradient(135deg, 
                     rgba(199, 209, 216, 0.1) 0%, 

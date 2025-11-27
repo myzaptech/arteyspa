@@ -113,8 +113,15 @@ export default function AdminLogin() {
         }}
       >
         <CardHeader className="text-center">
-          <div className="bg-gradient-to-br from-[#84AEBC] to-[#406577] p-4 rounded-full w-16 h-16 mx-auto mb-4 shadow-lg">
-            <LockIcon className="h-8 w-8 text-white" />
+          <div className="flex justify-center mb-4">
+            <img
+              src="/logo.png"
+              alt="Arte y Spa Logo"
+              className="h-20 w-auto object-contain drop-shadow-lg"
+              style={{
+                clipPath: 'inset(8% 8% 8% 8%)',
+              }}
+            />
           </div>
           <CardTitle className="text-2xl font-bold text-[#406577]">Panel de Administración</CardTitle>
           <CardDescription className="text-[#84AEBC]">Arte y Spa - Acceso Restringido</CardDescription>

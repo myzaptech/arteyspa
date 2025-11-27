@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST='{"lib\\\\products.ts -> firebase/firestore":{"id":5978,"files":[]},"lib\\\\products.ts -> firebase/storage":{"id":6485,"files":[]}}';
+self.__REACT_LOADABLE_MANIFEST="{\"lib\\\\products.ts -> firebase/firestore\":{\"id\":\"lib\\\\products.ts -> firebase/firestore\",\"files\":[]}}"
