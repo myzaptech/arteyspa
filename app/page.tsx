@@ -342,10 +342,9 @@ export default function ArteSpaLanding() {
         </div>
       )}
 
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl" style={{
-        background: 'rgba(255, 255, 255, 0.03)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.05)'
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl" style={{
+        background: 'transparent',
+        borderBottom: 'none'
       }}>
         <div className="max-w-7xl mx-auto px-4 py-2.5 md:py-3">
           <div className="flex items-center justify-between">
