@@ -342,15 +342,16 @@ export default function ArteSpaLanding() {
         </div>
       )}
 
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl" style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-2xl" style={{
+        background: 'rgba(255, 255, 255, 0.03)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.05)'
       }}>
         <div className="max-w-7xl mx-auto px-4 py-2.5 md:py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 md:gap-3">
-              <img src="/logo-optimized.png" alt="Logo" className="h-10 w-10 md:h-12 md:w-12 object-contain drop-shadow-lg" />
-              <span className="text-white font-bold text-lg md:text-xl drop-shadow-lg">Arte & Spa</span>
+              <img src="/logo-optimized.png" alt="Logo" className="h-10 w-10 md:h-12 md:w-12 object-contain drop-shadow-2xl" />
+              <span className="text-white font-bold text-lg md:text-xl drop-shadow-2xl">Arte & Spa</span>
             </div>
             <div className="flex gap-2 md:gap-3 overflow-x-auto">
               {[
@@ -362,7 +363,7 @@ export default function ArteSpaLanding() {
                 <button
                   key={item.id}
                   onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base font-medium text-white hover:bg-white/20 rounded-lg transition-all duration-300 whitespace-nowrap backdrop-blur-sm"
+                  className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base font-medium text-white/90 hover:text-white hover:bg-white/15 rounded-lg transition-all duration-300 whitespace-nowrap"
                 >
                   {item.name}
                 </button>
@@ -380,7 +381,8 @@ export default function ArteSpaLanding() {
                 <img 
                   src="/logo-optimized.png" 
                   alt="Arte y Spa Logo" 
-                  className="h-20 w-20 sm:h-24 sm:w-24 md:h-32 md:w-32 object-contain drop-shadow-2xl hover:scale-110 transition-transform duration-500 animate-pulse-slow"
+                  className="h-20 w-20 sm:h-24 sm:w-24 md:h-32 md:w-32 object-cover drop-shadow-2xl hover:scale-110 transition-transform duration-500 animate-pulse-slow"
+                  style={{ imageRendering: 'crisp-edges' }}
                 />
               </div>
 
