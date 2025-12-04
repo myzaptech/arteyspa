@@ -342,7 +342,37 @@ export default function ArteSpaLanding() {
         </div>
       )}
 
-      <section className="relative z-10 py-16 md:py-32 px-4">
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b" style={{
+        background: 'linear-gradient(135deg, rgba(199, 209, 216, 0.95) 0%, rgba(132, 174, 188, 0.9) 100%)',
+        borderColor: 'rgba(199, 209, 216, 0.3)'
+      }}>
+        <div className="max-w-7xl mx-auto px-4 py-3 md:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 md:gap-3">
+              <img src="/logo-optimized.png" alt="Logo" className="h-8 w-8 md:h-10 md:w-10 object-contain" />
+              <span className="text-[#406577] font-bold text-lg md:text-xl drop-shadow-lg">Arte & Spa</span>
+            </div>
+            <div className="flex gap-2 md:gap-4 overflow-x-auto">
+              {[
+                { id: 'about', name: 'Nosotros' },
+                { id: 'services', name: 'Servicios' },
+                { id: 'products', name: 'Tienda' },
+                { id: 'contact', name: 'Contacto' }
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  className="px-3 md:px-4 py-2 text-sm md:text-base font-medium text-[#406577] hover:text-white hover:bg-[#406577]/80 rounded-lg transition-all duration-300 whitespace-nowrap"
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <section className="relative z-10 py-16 md:py-32 px-4 pt-24 md:pt-36">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="text-left animate-fade-in-up">
@@ -706,7 +736,7 @@ export default function ArteSpaLanding() {
         </div>
       </section>
 
-      <section className="relative z-10 py-16 md:py-24 px-4">
+      <section id="contact" className="relative z-10 py-16 md:py-24 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 md:mb-16 animate-on-scroll">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#406577] mb-6 md:mb-8 drop-shadow-2xl">
