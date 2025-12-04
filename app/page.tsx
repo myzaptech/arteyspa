@@ -346,6 +346,14 @@ export default function ArteSpaLanding() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div className="text-left animate-fade-in-up">
+              <div className="mb-6 md:mb-8 flex justify-start">
+                <img 
+                  src="/logo-optimized.png" 
+                  alt="Arte y Spa Logo" 
+                  className="h-20 w-20 sm:h-24 sm:w-24 md:h-32 md:w-32 object-contain drop-shadow-2xl hover:scale-110 transition-transform duration-500 animate-pulse-slow"
+                />
+              </div>
+
               <div
                 className="inline-block px-4 md:px-6 py-2 md:py-3 rounded-full mb-6 md:mb-8 border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 style={{
