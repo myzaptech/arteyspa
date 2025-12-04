@@ -15,9 +15,9 @@ async function generateFavicon() {
     console.log('📸 Procesando logo...');
     console.log(`   Dimensiones originales: ${metadata.width}x${metadata.height}`);
 
-    // Recortar bordes blancos/transparentes automáticamente
+    // Recortar bordes blancos/transparentes automáticamente con umbral más agresivo
     const trimmedImage = await image
-      .trim()
+      .trim({ threshold: 15 }) // Umbral más agresivo para eliminar bordes sutiles
       .toBuffer();
 
     console.log('✂️  Bordes recortados');
