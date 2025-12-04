@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const path = require('path');
 
 async function generateFavicon() {
-  const inputPath = path.join(__dirname, '..', 'public', 'logo.png');
+  const inputPath = path.join(__dirname, '..', 'public', 'logo 1.png');
   const faviconPath = path.join(__dirname, '..', 'public', 'favicon.ico');
   const favicon16Path = path.join(__dirname, '..', 'public', 'favicon-16x16.png');
   const favicon32Path = path.join(__dirname, '..', 'public', 'favicon-32x32.png');
