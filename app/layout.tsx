@@ -10,12 +10,13 @@ export const metadata: Metadata = {
   description: 'Centro de bienestar y spa de lujo. Disfruta de nuestros tratamientos de relajación, masajes, terapias y servicios de belleza en un ambiente tranquilo y profesional.',
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
-      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo-optimized.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo-optimized.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+      { url: '/logo-optimized.png', sizes: '180x180', type: 'image/png' },
     ],
   },
 }
